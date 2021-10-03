@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+    image: mysql-server
+    container_name: my-mysql-server
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - data-volume:/var/lib/mysql
+
+    # these variables could be stored in an external .env file as well
+    # w0090347 will automatically be set to full access to sean_dotnetcoreSamples
+    environment:
+      MYSQL_ROOT_PASSWORD: nscc
+      MYSQL_DATABASE: dotnetcoreSamples
+      MYSQL_USER: user
+      MYSQL_PASSWORD: test
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    container_name: my-adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - app-network
+
+networks:
+    app-network:
+        driver: bridge
+
+volumes:
+    data-volume:
+    web-root:
+      driver: local
